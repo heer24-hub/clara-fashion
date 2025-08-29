@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <meta charset="UTF-8" />
+       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+       <title>CivicMap — Crowdsourced City Issues</title>
+       <!-- Leaflet CSS -->
+       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+       <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+        <header>
+            <div class="nav">
+                <div class="brand">CivicMap</div>
+                <div class="chip">Crowdsourced City Issues</div>
+                <div style="margin-left:auto; display:flex; gap:8px">
+                    <button id="btnExport" class="btn-ghost">Export JSON</button>
+                    <label class="btn-ghost" style="display:inline-grid; place-items:center; cursor:pointer;">Import JSON
+                        <input id="importFile" type="file" accept="application/json" class="hidden" />
+                    </label>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <aside class="sidebar">
+                <input id="search" class="search" type="text" placeholder="Search by title, description, or area…" />
+                <div class="tools">
+                    <select id="filterCategory">
+                        <option value="">All Categories</option>
+                        <option>Roads</option>
+                        <option>Water</option>
+                        <option>Electricity</option>
+                        <option>Waste</option>
+                        <option>Public Safety</option>
+                        <option>Parks</option>
+                        <option>Other</option>
+                    </select>
+                    <select id="filterStatus">
+                        <option value="">All Status</option>
+                        <option value="open">Open</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                    <select id="sortBy" class="search">
+                        <option value="new">Sort by: Newest</option>
+                        <option value="votes">Sort by: Most Votes</option>
+                        <option value="old">Sort by: Oldest</option>
+                    </select>
+                </div>
+                <div class="list" id="issueList"></div>
+                <div class="footer">Tip: Click on the map to report an issue at that location.</div>
+            </aside>
+
+            <section class="map-wrap">
+                <div id="map"></div>
+                <div class="legend">
+                   <div><span class="dot open"></span> Open</div>
+                   <div><span class="dot progress"></span> In Progress</div>
+                   <div><span class="dot resolved"></span> Resolved</div>
+                </div>
+            </section>
+        </main>
+
+        <div class="fab">
+            <button id="btnAdd" title="Report an Issue" class="primary">＋</button>
+            <button id="btnLocate" title="Go to My Location">📍</button>
+        </div>
+
+        <!-- Create / Edit Issue Modal -->
+        <div id="issueModal" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-card">
+                <div class="modal-head">
+                    <strong id="modalTitle">Report an Issue</strong>
+                    <button id="modalClose" class="btn-ghost" style="width:auto">Close ✖</button>
+                </div>
+                <form id="issueForm" class="modal-body">
+                    <div class="grid-2">
+                        <div>
+                            <label>Title</label>
+                            <input id="fTitle" required placeholder="e.g., Pothole near MG Road" />
+                        </div>
+                        <div>
+                            <label>Category</label>
+                            <select id="fCategory" required>
+                                <option>Roads</option>
+                                <option>Water</option>
+                                <option>Electricity</option>
+                                <option>Waste</option>
+                                <option>Public Safety</option>
+                                <option>Parks</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Status</label>
+                            <select id="fStatus">
+                                <option value="open">Open</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Photo (optional)</label>
+                            <input id="fPhoto" type="file" accept="image/*" />
+                        </div>
+                    </div>
+                    <div>
+                        <label>Description</label>
+                        <textarea id="fDesc" rows="3" placeholder="Describe the problem, severity, any details…"></textarea>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label>Latitude</label>
+                            <input id="fLat" required type="number" step="any" placeholder="Click map or enter lat" />
+                        </div>
+                        <div>
+                            <label>Longitude</label>
+                            <input id="fLng" required type="number" step="any" placeholder="Click map or enter lng" />
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:6px;">
+                        <button type="button" id="btnDelete" class="btn-ghost hidden">Delete</button>
+                        <button type="submit" class="btn" style="width:auto">Save Issue</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Details Modal -->
+        <div id="detailsModal" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-card">
+                <div class="modal-head">
+                    <strong>Issue Details</strong>
+                    <button id="detailsClose" class="btn-ghost" style="width:auto">Close ✖</button>
+                </div>
+                <div class="modal-body" id="detailsBody"></div>
+            </div>
+        </div>
+    </body>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="app.js"></script>
+</html>
